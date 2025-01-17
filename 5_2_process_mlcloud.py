@@ -63,11 +63,11 @@ def process_mlcloud(input_file_path, output_file_path):
             for y in range(y_dim):
                 for x in range(x_dim):
                     values = []
-                    
+
                     # Add the current box value
                     if smoothed_data[t, y, x] != 0:
                         values.append(smoothed_data[t, y, x])
-                    
+
                     # Add neighboring box values only if non-zero
                     if x > 0 and t + 6 < time_dim and smoothed_data[t + 6, y, x - 1] != 0:
                         values.append(smoothed_data[t + 6, y, x - 1])
@@ -81,15 +81,12 @@ def process_mlcloud(input_file_path, output_file_path):
                         values.append(smoothed_data[t - 13, y, x + 2])
                     if x + 3 < x_dim and t - 19 >= 0 and smoothed_data[t - 19, y, x + 3] != 0:
                         values.append(smoothed_data[t - 19, y, x + 3])
-        
+
                     # Calculate the average of the non-zero values
                     if values:
                         processed_data[t, y, x] = np.mean(values)
                     else:
                         processed_data[t, y, x] = 0  # Assign zero if no valid values exist
-
-                        
-                    print(x, y, values)
 
         # Write processed data to a new NetCDF file
         with Dataset(output_file_path, 'w', format=src_nc.file_format) as dst_nc:
@@ -103,12 +100,31 @@ def process_mlcloud(input_file_path, output_file_path):
             # Copy variables except MLCloud
             for name, variable in src_nc.variables.items():
                 if name != 'MLCloud':
-                    new_var = dst_nc.createVariable(name, variable.datatype, variable.dimensions)
+                    # Check if the variable needs custom chunk sizes
+                    if name in ['Radiance', 'Latitude', 'Longitude']:
+                        chunksizes = (1, 300, 300)
+                    else:
+                        chunksizes = variable.chunking()  # Use default chunk sizes from the source file if available
+
+                    # Create variable with compression and chunking
+                    new_var = dst_nc.createVariable(
+                        name, 
+                        variable.datatype, 
+                        variable.dimensions, 
+                        zlib=True, 
+                        complevel=4, 
+                        chunksizes=chunksizes
+                    )
                     new_var[:] = variable[:]
                     new_var.setncatts({attr: variable.getncattr(attr) for attr in variable.ncattrs()})
 
             # Add the processed MLCloud variable
-            mlcloud_var = dst_nc.createVariable('Processed_MLCloud', 'f4', ('time', 'y_box_across_track', 'x_box_along_track'), zlib=True)
+            mlcloud_var = dst_nc.createVariable(
+                'Processed_MLCloud', 'f4', 
+                ('time', 'y_box_across_track', 'x_box_along_track'), 
+                zlib=True, 
+                complevel=4
+            )
             mlcloud_var[:] = processed_data
 
             print(f"Processed file saved: {output_file_path}")
