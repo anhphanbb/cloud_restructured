@@ -1,0 +1,3 @@
+Jan 21 2024 (or Jan 16)
+	Added orbits 44, 45, and 46 from Dallin's labeling.
+	Dallin identified oil rigs and city lights. Upcoming models can identify these cases better. 

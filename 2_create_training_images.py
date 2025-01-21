@@ -20,7 +20,7 @@ import shutil
 space = 5
 
 # Path to the CSV file with filenames and intervals
-csv_file_path = 'csv/cloud_intervals_jan_14.csv'
+csv_file_path = 'csv/cloud_intervals_jan_21.csv'
 parent_directory = 'l1r_11'
 
 # Define output folders
