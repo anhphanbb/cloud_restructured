@@ -19,7 +19,6 @@ import numpy as np
 from sklearn.metrics import confusion_matrix
 from tensorflow.keras import backend as K
 from tensorflow.keras.mixed_precision import set_global_policy
-from sklearn.utils.class_weight import compute_class_weight
 from tensorflow.keras.metrics import Precision, Recall
 
 # # Use mixed precision training (If using GPUs)
@@ -37,11 +36,10 @@ if gpus:
 
 # Define your data augmentation pipeline
 def augment(image):
-    image = tf.image.random_flip_left_right(image)
+    # image = tf.image.random_flip_left_right(image)
     image = tf.image.random_flip_up_down(image)
-    # image = tf.image.rot90(image, k=tf.random.uniform(shape=[], minval=0, maxval=4, dtype=tf.int32))
-    image = tf.image.random_brightness(image, max_delta=0.2)
-    image = tf.image.random_contrast(image, lower=0.8, upper=1.2)
+    # image = tf.image.random_brightness(image, max_delta=0.2)
+    # image = tf.image.random_contrast(image, lower=0.8, upper=1.2)
     return image
 
 # Set new image size based on bounding box dimensions
@@ -108,26 +106,17 @@ logdir = f'logs/resnet_model'
 tensorboard_callback = TensorBoard(log_dir=logdir)
 early_stopping_callback = EarlyStopping(
     monitor='accuracy',
-    patience=100,
+    patience=50,
     restore_best_weights=True
 )
 
 start_time = time.time()
 
-# Compute class weights
-# class_weights = compute_class_weight(
-#     class_weight='balanced',
-#     classes=np.unique([0, 1]),
-#     y=[0] * 18000 + [1] * 10000
-# )
-# class_weights_dict = dict(enumerate(class_weights))
-
 # Add class weights during training
 hist = model.fit(
     train,
-    epochs=500,
+    epochs=300,
     validation_data=val,
-    # class_weight=class_weights_dict,
     callbacks=[tensorboard_callback, early_stopping_callback]
 )
 end_time = time.time()
@@ -139,47 +128,6 @@ histories.append(hist)
 os.makedirs('models', exist_ok=True)
 model.save('models/DeepLearning_resnet_model_cloud.h5')
 
-def evaluate_confusion_matrix(model, test_data, threshold):
-    y_true = []
-    y_pred = []
-
-    for batch in test_data.as_numpy_iterator():
-        X, y = batch
-        yhat = model.predict(X)
-        y_true.extend(y)
-        y_pred.extend(yhat)
-
-    y_true = np.array(y_true)
-    y_pred = np.array(y_pred)
-
-    # Apply threshold to predictions
-    y_pred_thresholded = (y_pred >= threshold / 100).astype(int)
-
-    # Compute confusion matrix
-    tn, fp, fn, tp = confusion_matrix(y_true, y_pred_thresholded).ravel()
-    
-    return tn, fp, fn, tp
-
-# List to hold results
-confusion_matrix_results = []
-
-# Evaluate model for thresholds from 30 to 70 (integer values)
-for threshold in range(30, 71):
-    tn, fp, fn, tp = evaluate_confusion_matrix(model, test, threshold)
-
-    confusion_matrix_results.append({
-        'Threshold': threshold,
-        'True_Negatives': tn,
-        'False_Positives': fp,
-        'False_Negatives': fn,
-        'True_Positives': tp
-    })
-
-# Save confusion matrix results to CSV
-confusion_matrix_df = pd.DataFrame(confusion_matrix_results)
-confusion_matrix_df.to_csv('resnet_confusion_matrix_thresholds.csv', index=False)
-
-print("Confusion matrix components saved to resnet_confusion_matrix_thresholds.csv")
 
 # Plot validation metrics for ResNet-50 model
 plt.figure(figsize=(12, 8))
@@ -199,3 +147,53 @@ plt.ylabel('Metrics')
 plt.legend()
 plt.show()
 
+# Evaluate model once on the test set
+y_true = []
+y_pred = []
+
+for batch in test.as_numpy_iterator():
+    X, y = batch
+    yhat = model.predict(X)
+    y_true.extend(y)
+    y_pred.extend(yhat)
+
+y_true = np.array(y_true)
+y_pred = np.array(y_pred)
+
+# Calculate confusion matrix, accuracy, and recall for thresholds
+confusion_matrix_results = []
+
+for threshold in range(0, 101):  # Thresholds from 0 to 100
+    threshold_value = threshold / 100.0
+    y_pred_thresholded = (y_pred >= threshold_value).astype(int)
+
+    tn, fp, fn, tp = confusion_matrix(y_true, y_pred_thresholded).ravel()
+    accuracy = (tp + tn) / (tp + tn + fp + fn)
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0
+
+    confusion_matrix_results.append({
+        'Threshold': threshold_value,
+        'True_Negatives': tn,
+        'False_Positives': fp,
+        'False_Negatives': fn,
+        'True_Positives': tp,
+        'Accuracy': accuracy,
+        'Recall': recall
+    })
+
+# Save results to CSV
+confusion_matrix_df = pd.DataFrame(confusion_matrix_results)
+confusion_matrix_df.to_csv('resnet_confusion_matrix_with_accuracy_recall.csv', index=False)
+
+print("Confusion matrix with accuracy and recall saved to resnet_confusion_matrix_with_accuracy_recall.csv")
+
+# Plot accuracy and recall over thresholds
+plt.figure(figsize=(12, 8))
+plt.plot(confusion_matrix_df['Threshold'], confusion_matrix_df['Accuracy'], label='Accuracy', color='blue')
+plt.plot(confusion_matrix_df['Threshold'], confusion_matrix_df['Recall'], label='Recall', color='orange')
+plt.title('Accuracy and Recall Over Thresholds')
+plt.xlabel('Threshold')
+plt.ylabel('Metric Value')
+plt.legend()
+plt.grid()
+plt.show()

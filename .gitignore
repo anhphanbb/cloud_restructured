@@ -166,3 +166,4 @@ nc_files_to_predict/
 nc_files_with_mlcloud/
 processed_nc_files/
 logs/
+images/
