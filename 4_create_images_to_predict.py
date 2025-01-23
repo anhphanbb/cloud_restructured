@@ -14,10 +14,10 @@ import numpy as np
 import re
 
 # Input folder containing .nc files
-nc_folder = 'nc_files_to_predict'
+nc_folder = r'D:\soc\l1r\2024\03'
 
 # Output folder to save prediction images
-output_folder = 'images_to_predict'
+output_folder = r'D:\soc\l1r\2024\03\images_to_predict'
 
 # Number of frames before and after for consecutive image combination
 space = 5

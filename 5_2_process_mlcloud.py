@@ -11,8 +11,11 @@ import numpy as np
 from netCDF4 import Dataset
 
 # Define input and output folders
-nc_input_folder = 'nc_files_with_mlcloud'
-nc_output_folder = 'processed_nc_files'
+# nc_input_folder = 'nc_files_with_mlcloud'
+nc_input_folder = r'D:\soc\l1r\2024\03\nc_files_with_mlcloud'
+
+# nc_output_folder = 'processed_nc_files'
+nc_output_folder = r'D:\soc\l1c\2024\03'
 
 # Ensure the output folder exists
 os.makedirs(nc_output_folder, exist_ok=True)
@@ -20,7 +23,6 @@ os.makedirs(nc_output_folder, exist_ok=True)
 # Define the running average window size
 window_size = 5
 
-# Function to perform a running average
 # Function to perform a running average
 def running_average(data, window_size):
     cumsum = np.cumsum(np.insert(data, 0, 0), axis=0)
