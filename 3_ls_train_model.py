@@ -48,7 +48,7 @@ new_image_size = (100, 20)  # Set height=100 and width=20
 
 # Load Data and Resize
 data = tf.keras.utils.image_dataset_from_directory(
-    'images',
+    'ls_training_images',
     image_size=new_image_size,
     color_mode='rgb',  # Load images as RGB
     batch_size=32,
@@ -97,7 +97,7 @@ model.compile(
     optimizer='adam',
     loss='binary_crossentropy',
     # metrics=['accuracy', Precision(name='precision'), Recall(name='recall')]
-    metrics=['accuracy']
+    metrics=['accuracy', Recall(name='recall')]
 )
 
 model.summary()
@@ -106,7 +106,7 @@ logdir = f'logs/resnet_model'
 tensorboard_callback = TensorBoard(log_dir=logdir)
 early_stopping_callback = EarlyStopping(
     monitor='accuracy',
-    patience=50,
+    patience=20,
     restore_best_weights=True
 )
 
@@ -115,7 +115,7 @@ start_time = time.time()
 # Add class weights during training
 hist = model.fit(
     train,
-    epochs=300,
+    epochs=100,
     validation_data=val,
     callbacks=[tensorboard_callback, early_stopping_callback]
 )
@@ -126,7 +126,7 @@ histories.append(hist)
 
 # Save the Model
 os.makedirs('models', exist_ok=True)
-model.save('models/DeepLearning_resnet_model_cloud.h5')
+model.save('models/DeepLearning_resnet_model_ls.h5')
 
 
 # Plot validation metrics for ResNet-50 model

@@ -167,3 +167,7 @@ nc_files_with_mlcloud/
 processed_nc_files/
 logs/
 images/
+images_to_predict/
+ls_orbit_predictions/
+ls_training_images/
+nc_files_with_mlls/
