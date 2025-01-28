@@ -11,15 +11,15 @@ import pandas as pd
 from netCDF4 import Dataset
 import re
 
-# Define input and output folders
-# nc_input_folder = 'nc_files_to_predict'
-nc_input_folder = r'D:\soc\l1r\2024\03'
+# Define input and output folders 
+# nc_input_folder = 'nc_files_to_predict' 
+nc_input_folder = r'E:\soc\l1r\2024\04' 
+  
+# csv_predictions_folder = 'orbit_predictions' 
+csv_predictions_folder = r'E:\soc\l1r\2024\04\orbit_predictions' 
 
-# csv_predictions_folder = 'orbit_predictions'
-csv_predictions_folder = r'D:\soc\l1r\2024\03\orbit_predictions'
-
-# nc_output_folder = 'nc_files_with_mlcloud'
-nc_output_folder = r'D:\soc\l1r\2024\03\nc_files_with_mlcloud'
+# nc_output_folder = 'nc_files_with_mlcloud' 
+nc_output_folder = r'E:\soc\l1r\2024\04\nc_files_with_mlcloud' 
 
 # Ensure the output folder exists
 os.makedirs(nc_output_folder, exist_ok=True)
@@ -83,7 +83,7 @@ def add_mlcloud_to_nc_file(input_file_path, output_file_path, mlcloud_data):
 
 # Main script to process all files
 for file_name in os.listdir(nc_input_folder):
-    if file_name.endswith('.nc'):
+    if file_name.endswith('.nc') and 'q20' in file_name:
         print(file_name)
         orbit_number = extract_orbit_number(file_name)
         print(orbit_number)

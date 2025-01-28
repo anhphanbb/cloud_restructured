@@ -14,16 +14,16 @@ import time
 from tensorflow.keras.models import load_model
 from tensorflow.keras.applications.resnet50 import preprocess_input
 
-# Path to the folder containing orbit subfolders with images
-# input_folder = 'images_to_predict'
-input_folder = r'D:\soc\l1r\2024\03\images_to_predict'
+# Path to the folder containing orbit subfolders with images 
+# input_folder = 'images_to_predict' 
+input_folder = r'E:\soc\l1r\2024\04\images_to_predict' 
 
-# Output folder for CSV results
-# csv_output_folder = 'orbit_predictions'
-csv_output_folder = r'D:\soc\l1r\2024\03\orbit_predictions'
+# Output folder for CSV results 
+# csv_output_folder = 'orbit_predictions' 
+csv_output_folder = r'E:\soc\l1r\2024\04\orbit_predictions' 
 
 # Path to the pre-trained model
-model_path = 'models/DeepLearning_resnet_model_cloud.h5'
+model_path = 'models/DeepLearning_resnet_model_cloud_jan_21_2025.h5'
 
 # Ensure the output folder for CSV files exists
 os.makedirs(csv_output_folder, exist_ok=True)

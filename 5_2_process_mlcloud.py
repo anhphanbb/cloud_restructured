@@ -10,12 +10,13 @@ import os
 import numpy as np
 from netCDF4 import Dataset
 
-# Define input and output folders
-# nc_input_folder = 'nc_files_with_mlcloud'
-nc_input_folder = r'D:\soc\l1r\2024\03\nc_files_with_mlcloud'
 
-# nc_output_folder = 'processed_nc_files'
-nc_output_folder = r'D:\soc\l1c\2024\03'
+# Define input and output folders 
+# nc_input_folder = 'nc_files_with_mlcloud' 
+nc_input_folder = r'E:\soc\l1r\2024\04\nc_files_with_mlcloud' 
+
+# nc_output_folder = 'processed_nc_files' 
+nc_output_folder = r'E:\soc\l1c\2024\04' 
 
 # Ensure the output folder exists
 os.makedirs(nc_output_folder, exist_ok=True)

@@ -13,11 +13,12 @@ import cv2
 import numpy as np
 import re
 
-# Input folder containing .nc files
-nc_folder = r'D:\soc\l1r\2024\03'
+nc_folder = r'E:\soc\l1r\2024\04'
+# nc_folder = 'nc_files_to_predict'
 
 # Output folder to save prediction images
-output_folder = r'D:\soc\l1r\2024\03\images_to_predict'
+# output_folder = 'images_to_predict'
+output_folder = r'E:\soc\l1r\2024\04\images_to_predict'
 
 # Number of frames before and after for consecutive image combination
 space = 5
@@ -98,7 +99,7 @@ def create_images_from_nc_file(nc_file_path, grid_boxes, output_folder, space):
 def process_all_nc_files(nc_folder, output_folder, grid_boxes, space):
     for root, _, files in os.walk(nc_folder):
         for file in files:
-            if file.endswith('.nc'):
+            if file.endswith('.nc') and 'q20' in file:
                 nc_file_path = os.path.join(root, file)
                 print(f"Processing file: {nc_file_path}")
                 create_images_from_nc_file(nc_file_path, grid_boxes, output_folder, space)
