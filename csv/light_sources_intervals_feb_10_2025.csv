@@ -1,0 +1,87 @@
+﻿Orbit #,"(7,2)start","(7,2)end","(7,1)start","(7,1)end","(7,0)start","(7,0)end",,
+1,,,263,277,,,"Not clouds, just lights",
+1,963,969,944,978,917,987,City/oil rig lights,
+1,992,1060,990,1010,994,1000,City/oil rig lights,
+1,1161,1171,1016,1024,1004,1012,City/oil rig lights,
+,,,,,,,,
+18,0,29,0,13,,,,Ground Lights
+18,,,17,27,,,,Ground Lights
+18,33,46,,,,,,Ground Lights
+18,53,93,49,100,66,99,,Ground Lights
+18,103,118,107,142,125,134,,Ground Lights
+18,156,173,167,176,140,160,,Ground Lights
+18,253,261,,,,,,Ground Lights
+18,281,290,,,,,,Ground Lights
+18,,,292,308,294,309,,Ground Lights
+18,316,324,318,327,317,325,,Ground Lights
+18,,,,,334,344,,Ground Lights
+18,894,903,894,903,,,,Ground Lights
+,,,,,,,,
+45,454,464,,,465,488,Lights,
+45,,,567,575,561,572,Lights,
+45,,,581,630,576,602,Lights,
+45,901,922,899,905,889,897,Lights,
+45,981,988,907,922,,,Lights,
+,,,,,,,,
+44,0,20,0,33,16,26,,Ground lights till 214 some clouds
+44,36,50,36,55,,,,
+44,54,71,,,,,,
+44,,,72,81,,,,
+44,83,92,86,94,88,96,,
+44,,,99,107,,,,
+44,124,132,,,129,137,,
+44,,,145,154,146,154,,
+44,172,181,,,,,,
+44,192,201,,,,,,
+44,201,214,,,,,,
+44,,,390,410,,,,Ground lights
+44,,,434,443,,,,Ground lights
+44,,,458,477,,,,Ground lights
+44,479,502,,,,,,Ground lights 
+44,,,503,512,,,,Ground light
+44,515,528,,,,,,Ground lights
+44,534,569,,,,,,Ground lights 
+44,570,647,628,637,,,,Ground lights 
+44,648,669,666,692,669,681,,Ground lights 
+44,672,691,,,,,,Ground lights 
+44,693,710,,,,,,Ground lights 
+44,712,720,,,,,,Ground lights 
+44,723,732,,,,,,Ground lights 
+44,734,755,,,,,,Ground lights 
+44,769,813,795,811,,,,Ground lights 
+,,,,,,,,
+45,221,230,,,218,226,,Ground lights
+45,,,,,389,399,,Ground lights
+45,452,465,,,464,499,,Ground lights
+45,,,557,630,560,603,,Ground lights
+45,,,,,889,898,,Ground lights
+45,901,924,899,924,,,,Ground lights
+45,980,989,,,,,,Ground lights
+,,,,,,,,
+46,447,455,,,,,,Ground lights
+46,494,502,,,,,,Ground lights
+46,870,879,,,,,,Ground lights
+46,933,941,916,942,,,,Ground lights
+46,969,981,,,,,,Ground lights
+46,983,991,991,1224,1041,1209,,Ground lights
+46,,,,,1442,1451,,Ground lights
+46,,,,,1461,1470,,Ground lights
+46,,,,,1488,1496,,Ground lights
+,,,,,,,,
+1175,522,538,,,,,,Ground Light
+1175,,,,,570,585,,Ground Light
+1175,,,,,600,609,,Ground Light
+,,,,,,,,
+1400,510,523,,,,,,Ground lights
+1400,,,1073,1084,,,,Ground lights
+1400,1087,1096,,,,,,Ground lights
+1400,,,1102,1117,,,,Ground lights
+1400,,,,,1252,1264,,Ground lights
+1400,1296,1316,1295,1317,,,,Ground lights
+,,,,,,,,
+1445,,,,,819,828,,Ground lights
+1445,854,864,,,854,863,,Ground lights
+1445,,,878,886,,,,Ground lights
+1445,,,918,927,,,,Ground lights
+1445,,,,,977,987,,Ground lights
+1445,1049,1064,,,,,,Ground lights

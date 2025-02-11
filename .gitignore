@@ -171,3 +171,4 @@ images_to_predict/
 ls_orbit_predictions/
 ls_training_images/
 nc_files_with_mlls/
+l1r_ls/

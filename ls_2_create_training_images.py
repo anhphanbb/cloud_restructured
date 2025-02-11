@@ -20,8 +20,8 @@ import shutil
 space = 5
 
 # Path to the CSV file with filenames and intervals
-csv_file_path = 'csv/light_sources_intervals_jan_22_2025.csv'
-parent_directory = 'l1r_11'
+csv_file_path = 'csv/light_sources_intervals_feb_10_2025.csv'
+parent_directory = 'l1r_ls'
 
 # Define output folders
 class_1_folder = 'ls_training_images/class_1_ls'
