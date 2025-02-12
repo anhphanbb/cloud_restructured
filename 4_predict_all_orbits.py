@@ -16,11 +16,11 @@ from tensorflow.keras.applications.resnet50 import preprocess_input
 
 # Path to the folder containing orbit subfolders with images 
 # input_folder = 'images_to_predict' 
-input_folder = r'E:\soc\l1r\2024\04\images_to_predict' 
+input_folder = r'E:\soc\l1r\2024\06\images_to_predict' 
 
 # Output folder for CSV results 
 # csv_output_folder = 'orbit_predictions' 
-csv_output_folder = r'E:\soc\l1r\2024\04\orbit_predictions' 
+csv_output_folder = r'E:\soc\l1r\2024\06\orbit_predictions' 
 
 # Path to the pre-trained model
 model_path = 'models/DeepLearning_resnet_model_cloud_jan_21_2025.h5'

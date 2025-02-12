@@ -13,12 +13,12 @@ import cv2
 import numpy as np
 import re
 
-nc_folder = r'E:\soc\l1r\2024\04'
+nc_folder = r'E:\soc\l1r\2024\06'
 # nc_folder = 'nc_files_to_predict'
 
 # Output folder to save prediction images
 # output_folder = 'images_to_predict'
-output_folder = r'E:\soc\l1r\2024\04\images_to_predict'
+output_folder = r'E:\soc\l1r\2024\06\images_to_predict'
 
 # Number of frames before and after for consecutive image combination
 space = 5

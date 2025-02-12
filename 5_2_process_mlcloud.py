@@ -13,10 +13,10 @@ from netCDF4 import Dataset
 
 # Define input and output folders 
 # nc_input_folder = 'nc_files_with_mlcloud' 
-nc_input_folder = r'E:\soc\l1r\2024\04\nc_files_with_mlcloud' 
+nc_input_folder = r'E:\soc\l1r\2024\06\nc_files_with_mlcloud' 
 
 # nc_output_folder = 'processed_nc_files' 
-nc_output_folder = r'E:\soc\l1c\2024\04' 
+nc_output_folder = r'E:\soc\l1c\2024\06' 
 
 # Ensure the output folder exists
 os.makedirs(nc_output_folder, exist_ok=True)
