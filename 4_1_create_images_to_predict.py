@@ -24,7 +24,7 @@ output_folder = r'E:\soc\l1r\2024\06\images_to_predict'
 space = 5
 
 # Minimum orbit number to process
-min_orbit_number = 30000  # Change this value as needed
+min_orbit_number = 1  # Change this value as needed
 
 # Ensure output folder exists
 os.makedirs(output_folder, exist_ok=True)

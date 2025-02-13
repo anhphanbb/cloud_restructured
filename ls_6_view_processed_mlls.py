@@ -14,7 +14,7 @@ import re
 from matplotlib.patches import Rectangle
 
 # Define the path to the parent directory where the dataset is located
-parent_directory = 'nc_files_with_mlls'
+parent_directory = 'processed_nc_files'
 
 # Define the orbit number
 orbit_number = 839  # orbit number
@@ -42,7 +42,7 @@ if dataset_filename is None:
 # Load the dataset
 dataset = nc.Dataset(dataset_path, 'r')
 radiance = dataset.variables['Radiance'][:]
-mlls = dataset.variables['MLLS'][:]  # Load MLLS variable
+mlls = dataset.variables['Processed_MLLS'][:]  # Load MLLS variable
 iss_latitude = dataset.variables['ISS_Latitude'][:]  # Load ISS latitude data
 iss_longitude = dataset.variables['ISS_Longitude'][:]  # Load ISS longitude data
 

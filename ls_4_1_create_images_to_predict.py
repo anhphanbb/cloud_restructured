@@ -14,12 +14,15 @@ import numpy as np
 import re
 
 # Input folder containing .nc files
-nc_folder = 'nc_files_to_predict'
+nc_folder = 'l1r_11'
 # nc_folder = r'D:\soc\l1r\2024\03'
 
 # Output folder to save prediction images
 # output_folder = r'D:\soc\l1r\2024\03\images_to_predict'
 output_folder = 'images_to_predict'
+
+# Minimum orbit number to process
+min_orbit_number = 1  # Change this value as needed
 
 # Number of frames before and after for consecutive image combination
 space = 5
@@ -100,8 +103,16 @@ def create_images_from_nc_file(nc_file_path, grid_boxes, output_folder, space):
 def process_all_nc_files(nc_folder, output_folder, grid_boxes, space):
     for root, _, files in os.walk(nc_folder):
         for file in files:
-            if file.endswith('.nc'):
+            if file.endswith('.nc') and 'q20' in file:
                 nc_file_path = os.path.join(root, file)
+                orbit_match = re.search(r'_(\d{5})_', file)
+                
+                if orbit_match:
+                    orbit_number = int(orbit_match.group(1))
+                    if orbit_number < min_orbit_number:
+                        print(f"Skipping file {file} (orbit {orbit_number} < {min_orbit_number})")
+                        continue
+
                 print(f"Processing file: {nc_file_path}")
                 create_images_from_nc_file(nc_file_path, grid_boxes, output_folder, space)
 

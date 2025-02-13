@@ -3,7 +3,7 @@
 Script to process MLCloud variable from NetCDF files.
 
 Created on: Jan 8, 2025
-@author: anhph
+@author: Anh
 """
 
 import os
@@ -11,11 +11,9 @@ import numpy as np
 from netCDF4 import Dataset
 
 # Define input and output folders
-# nc_input_folder = 'nc_files_with_mlcloud'
-nc_input_folder = r'D:\soc\l1r\2024\03\nc_files_with_mlcloud'
+nc_input_folder = 'nc_files_with_mlls'
 
-# nc_output_folder = 'processed_nc_files'
-nc_output_folder = r'D:\soc\l1c\2024\03'
+nc_output_folder = 'processed_nc_files'
 
 # Ensure the output folder exists
 os.makedirs(nc_output_folder, exist_ok=True)
@@ -40,25 +38,25 @@ def running_average(data, window_size):
     
     return result
 
-# Function to process MLCloud variable and save results
-def process_mlcloud(input_file_path, output_file_path):
+# Function to process MLLS variable and save results
+def process_mlls(input_file_path, output_file_path):
     with Dataset(input_file_path, 'r') as src_nc:
         # Read dimensions
         time_dim = len(src_nc.dimensions['time'])
         y_dim = len(src_nc.dimensions['y_box_across_track'])
         x_dim = len(src_nc.dimensions['x_box_along_track'])
 
-        # Read MLCloud variable
-        mlcloud_data = src_nc.variables['MLCloud'][:]
+        # Read MLLS variable
+        mlls_data = src_nc.variables['MLLS'][:]
 
         # Apply running average to each (x, y) time series
-        smoothed_data = np.copy(mlcloud_data)
+        smoothed_data = np.copy(mlls_data)
         for y in range(y_dim):
             for x in range(x_dim):
-                smoothed_data[:, y, x] = running_average(mlcloud_data[:, y, x], window_size)
+                smoothed_data[:, y, x] = running_average(mlls_data[:, y, x], window_size)
 
         # Create processed data array
-        processed_data = np.zeros_like(mlcloud_data)
+        processed_data = np.zeros_like(mlls_data)
 
         # Calculate averages as specified
         for t in range(time_dim):
@@ -99,9 +97,9 @@ def process_mlcloud(input_file_path, output_file_path):
             for name, dimension in src_nc.dimensions.items():
                 dst_nc.createDimension(name, (len(dimension) if not dimension.isunlimited() else None))
 
-            # Copy variables except MLCloud
+            # Copy variables except MLLS
             for name, variable in src_nc.variables.items():
-                if name != 'MLCloud':
+                if name != 'MLLS':
                     # Check if the variable needs custom chunk sizes
                     if name in ['Radiance', 'Latitude', 'Longitude']:
                         chunksizes = (1, 300, 300)
@@ -120,14 +118,14 @@ def process_mlcloud(input_file_path, output_file_path):
                     new_var[:] = variable[:]
                     new_var.setncatts({attr: variable.getncattr(attr) for attr in variable.ncattrs()})
 
-            # Add the processed MLCloud variable
-            mlcloud_var = dst_nc.createVariable(
-                'Processed_MLCloud', 'f4', 
+            # Add the processed MLLS variable
+            mlls_var = dst_nc.createVariable(
+                'Processed_MLLS', 'f4', 
                 ('time', 'y_box_across_track', 'x_box_along_track'), 
                 zlib=True, 
                 complevel=4
             )
-            mlcloud_var[:] = processed_data
+            mlls_var[:] = processed_data
 
             print(f"Processed file saved: {output_file_path}")
 
@@ -136,6 +134,6 @@ for file_name in os.listdir(nc_input_folder):
     if file_name.endswith('.nc'):
         input_file_path = os.path.join(nc_input_folder, file_name)
         output_file_path = os.path.join(nc_output_folder, file_name)
-        process_mlcloud(input_file_path, output_file_path)
+        process_mlls(input_file_path, output_file_path)
 
 print("Processing completed.")

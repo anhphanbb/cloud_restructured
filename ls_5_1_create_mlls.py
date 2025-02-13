@@ -12,7 +12,7 @@ from netCDF4 import Dataset
 import re
 
 # Define input and output folders
-nc_input_folder = 'nc_files_to_predict'
+nc_input_folder = '839'
 
 csv_predictions_folder = 'ls_orbit_predictions'
 
@@ -88,7 +88,7 @@ for file_name in os.listdir(nc_input_folder):
             nc_file_path = os.path.join(nc_input_folder, file_name)
             csv_file_path = os.path.join(csv_predictions_folder, f"orbit_{orbit_number}_predictions.csv")
             if os.path.exists(csv_file_path):
-                output_file_path = os.path.join(nc_output_folder, file_name.replace('l1r', 'l1c'))
+                output_file_path = os.path.join(nc_output_folder, file_name.replace('l1r', 'l1l'))
                 
                 # Read CSV
                 predictions_df = pd.read_csv(csv_file_path)
