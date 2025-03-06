@@ -13,12 +13,12 @@ import cv2
 import numpy as np
 import re
 
-nc_folder = r'E:\soc\l1r\2024\06'
+nc_folder = r'E:\soc\l1r\2024\08'
 # nc_folder = 'nc_files_to_predict'
 
 # Output folder to save prediction images
 # output_folder = 'images_to_predict'
-output_folder = r'E:\soc\l1r\2024\06\images_to_predict'
+output_folder = r'E:\soc\l1r\2024\08\images_to_predict'
 
 # Number of frames before and after for consecutive image combination
 space = 5
@@ -47,7 +47,9 @@ def define_boxes():
             boxes[box_id] = {'x': x_range, 'y': y_range}
     return boxes
 
-ignored_boxes = ["(0,0)", "(1,0)", "(10,0)", "(11,0)", "(12,0)", "(13,0)", "(14,0)", "(0,2)", "(1,2)", "(10,2)", "(11,2)", "(12,2)", "(13,2)", "(14,2)"]
+ignored_boxes = ["(0,0)", "(1,0)", "(2,0)", "(3,0)", "(4,0)", "(10,0)", "(11,0)", "(12,0)", "(13,0)", "(14,0)",
+                 "(0,1)", "(1,1)", "(2,1)", "(3,1)", "(4,1)", "(10,1)", "(11,1)", "(12,1)", "(13,1)", "(14,1)", 
+                 "(0,2)", "(1,2)", "(2,2)", "(3,2)", "(4,2)", "(10,2)", "(11,2)", "(12,2)", "(13,2)", "(14,2)"]
 
 grid_boxes = define_boxes()
 
@@ -59,13 +61,13 @@ def normalize_radiance(frame, min_radiance=0, max_radiance=24):
 def create_images_from_nc_file(nc_file_path, grid_boxes, output_folder, space):
     orbit_match = re.search(r'_(\d{5})_', nc_file_path)
     if orbit_match:
-        orbit_number = int(orbit_match.group(1))
+        orbit_number = orbit_match.group(1)
     else:
         print(f"Could not determine orbit number from file: {nc_file_path}")
         return
 
     # Skip if orbit number is less than the minimum threshold
-    if orbit_number < min_orbit_number:
+    if int(orbit_number) < min_orbit_number:
         print(f"Skipping orbit {orbit_number} (below threshold of {min_orbit_number})")
         return
 

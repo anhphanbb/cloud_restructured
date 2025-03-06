@@ -48,7 +48,7 @@ new_image_size = (100, 20)  # Set height=100 and width=20
 
 # Load Data and Resize
 data = tf.keras.utils.image_dataset_from_directory(
-    'images',
+    'training_images',
     image_size=new_image_size,
     color_mode='rgb',  # Load images as RGB
     batch_size=32,
@@ -126,7 +126,7 @@ histories.append(hist)
 
 # Save the Model
 os.makedirs('models', exist_ok=True)
-model.save('models/DeepLearning_resnet_model_cloud.h5')
+model.save('models/DeepLearning_resnet_model_cloud_feb_24_2025.h5')
 
 
 # Plot validation metrics for ResNet-50 model

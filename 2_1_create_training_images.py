@@ -20,12 +20,12 @@ import shutil
 space = 5
 
 # Path to the CSV file with filenames and intervals
-csv_file_path = 'csv/cloud_intervals_jan_21.csv'
-parent_directory = 'l1r_11'
+csv_file_path = 'csv/cloud_intervals_feb_24_2025.csv'
+parent_directory = r'Z:\soc\l1r'
 
 # Define output folders
-cloud_folder = 'images/class_1_cloud'
-no_cloud_folder = 'images/class_0_no_cloud'
+cloud_folder = 'training_images/class_1_cloud'
+no_cloud_folder = 'training_images/class_0_no_cloud'
 
 # Ensure output folders exist
 os.makedirs(no_cloud_folder, exist_ok=True)
@@ -93,7 +93,8 @@ def extract_intervals_per_orbit(data):
 # Function to search for .nc file
 def find_nc_file(parent_directory, orbit_number):
     orbit_str = str(int(orbit_number)).zfill(5)
-    pattern = re.compile(r'awe_l1r_(.*)_' + orbit_str + r'_(.*)\.nc')
+    pattern = re.compile(r'awe_l1r_q20_(.*)_' + orbit_str + r'_(.*)\.nc')
+    
     for root, dirs, files in os.walk(parent_directory):
         for file in files:
             if pattern.match(file):
@@ -130,7 +131,7 @@ def save_image(data, folder, orbit_number, frame_index, box_idx, boxes):
     cv2.imwrite(file_path, cropped_image)
 
 # Main function to process intervals and save images
-def process_intervals_and_save_images(data, grid_boxes, cloud_chance=.3, no_cloud_chance=.012):
+def process_intervals_and_save_images(data, grid_boxes, cloud_chance=.4, no_cloud_chance=.02):
     threshold = 3 # Number of images away from the boundary between sp and no sp
     orbit_intervals = extract_intervals_per_orbit(data)
     for orbit_number, boxes in orbit_intervals.items():

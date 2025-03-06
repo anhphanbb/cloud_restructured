@@ -15,15 +15,15 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.applications.resnet50 import preprocess_input
 
 # Path to the folder containing orbit subfolders with images 
-# input_folder = 'images_to_predict' 
-input_folder = r'E:\soc\l1r\2024\06\images_to_predict' 
+input_folder = 'images_to_predict' 
+# input_folder = r'E:\soc\l1r\2024\08\images_to_predict' 
 
 # Output folder for CSV results 
-# csv_output_folder = 'orbit_predictions' 
-csv_output_folder = r'E:\soc\l1r\2024\06\orbit_predictions' 
+csv_output_folder = 'orbit_predictions' 
+# csv_output_folder = r'E:\soc\l1r\2024\08\orbit_predictions' 
 
 # Path to the pre-trained model
-model_path = 'models/DeepLearning_resnet_model_cloud_jan_21_2025.h5'
+model_path = 'models/DeepLearning_resnet_model_cloud_feb_24_2025.h5'
 
 # Ensure the output folder for CSV files exists
 os.makedirs(csv_output_folder, exist_ok=True)
@@ -40,9 +40,9 @@ def preprocess_images_batch(image_paths):
     batch = []
     for image_path in image_paths:
         image = cv2.imread(image_path)  # Load image in RGB directly
-        image_resized = cv2.resize(image, (100, 20))  # Resize to match training size # Set height=100 and width=20
-        image_resized = image  # Resize to match training size
-        image_preprocessed = preprocess_input(image_resized)  # Apply ResNet-50 preprocessing
+        # image_resized = cv2.resize(image, (100, 20))  # Resize to match training size # Set height=100 and width=20
+        # image_resized = image  # Resize to match training size
+        image_preprocessed = preprocess_input(image)  # Apply ResNet-50 preprocessing
         batch.append(image_preprocessed)
     return np.array(batch)  # Convert to a batch for prediction
 
@@ -52,6 +52,17 @@ def compute_running_average(predictions, window_size):
     Compute the running average over a given window size.
     """
     return np.convolve(predictions, np.ones(window_size) / window_size, mode='valid')
+
+# Function to remove all images from an orbit folder after processing
+def remove_orbit_images(orbit_folder):
+    for filename in os.listdir(orbit_folder):
+        file_path = os.path.join(orbit_folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            print(f'Failed to delete {file_path}. Reason: {e}')
+
 
 # Function to process a single orbit folder with batching
 def process_orbit_folder(orbit_folder, orbit_number, batch_size=32, avg_window_size=9):
@@ -119,8 +130,11 @@ def process_orbit_folder(orbit_folder, orbit_number, batch_size=32, avg_window_s
     print(f"Completed processing for Orbit {orbit_number}. Time taken: {end_time - start_time:.2f} seconds")
     print(f"Results saved to {output_csv_path}")
 
+    # Remove images after processing
+    remove_orbit_images(orbit_folder)
+    
 # Main script to process all orbit subfolders
-def process_all_orbits(input_folder, batch_size=32, avg_window_size=9):
+def process_all_orbits(input_folder, batch_size=32, avg_window_size=1):
     for orbit_folder_name in os.listdir(input_folder):
         orbit_folder_path = os.path.join(input_folder, orbit_folder_name)
         if os.path.isdir(orbit_folder_path):

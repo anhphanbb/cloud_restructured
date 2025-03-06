@@ -14,7 +14,7 @@ import numpy as np
 import re
 
 # Input folder containing .nc files
-nc_folder = 'l1r_11'
+nc_folder = 'l1r_01'
 # nc_folder = r'D:\soc\l1r\2024\03'
 
 # Output folder to save prediction images
@@ -48,8 +48,9 @@ def define_boxes():
             boxes[box_id] = {'x': x_range, 'y': y_range}
     return boxes
 
-ignored_boxes = ["(0,0)", "(1,0)", "(10,0)", "(11,0)", "(12,0)", "(13,0)", "(14,0)", "(0,2)", "(1,2)", "(10,2)", "(11,2)", "(12,2)", "(13,2)", "(14,2)"]  # No ignored boxes specified
-
+ignored_boxes = ["(0,0)", "(1,0)", "(2,0)", "(3,0)", "(4,0)", "(10,0)", "(11,0)", "(12,0)", "(13,0)", "(14,0)",
+                 "(0,1)", "(1,1)", "(2,1)", "(3,1)", "(4,1)", "(10,1)", "(11,1)", "(12,1)", "(13,1)", "(14,1)", 
+                 "(0,2)", "(1,2)", "(2,2)", "(3,2)", "(4,2)", "(10,2)", "(11,2)", "(12,2)", "(13,2)", "(14,2)"]
 
 grid_boxes = define_boxes()
 

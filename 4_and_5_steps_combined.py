@@ -8,8 +8,8 @@ Created on Wed Feb 12 13:04:57 2025
 import subprocess
 
 scripts = [
-    "4_1_create_images_to_predict.py",
-    "4_2_predict_all_orbits.py",
+    # "4_1_create_images_to_predict.py",
+    # "4_2_predict_all_orbits.py",
     "5_1_create_mlcloud.py",
     "5_2_process_mlcloud.py"
 ]

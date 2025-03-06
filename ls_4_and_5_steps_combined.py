@@ -8,7 +8,7 @@ Created on Wed Feb 12 13:04:57 2025
 import subprocess
 
 scripts = [
-    # "ls_4_1_create_images_to_predict.py",
+    "ls_4_1_create_images_to_predict.py",
     "ls_4_2_predict_all_orbits.py",
     "ls_5_1_create_mlls.py",
     "ls_5_2_process_mlls.py"

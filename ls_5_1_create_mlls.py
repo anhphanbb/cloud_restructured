@@ -12,7 +12,7 @@ from netCDF4 import Dataset
 import re
 
 # Define input and output folders
-nc_input_folder = '839'
+nc_input_folder = 'l1r_01'
 
 csv_predictions_folder = 'ls_orbit_predictions'
 
