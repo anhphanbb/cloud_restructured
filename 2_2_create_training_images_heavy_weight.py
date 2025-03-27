@@ -20,11 +20,11 @@ space = 5
 
 # Path to the CSV file with filenames and intervals
 csv_file_path = 'csv/cloud_intervals_heavy_weight_nov_26.csv'
-parent_directory = 'l1r_11'
+parent_directory = r'Z:\soc\l1r'
 
 # Define output folders
-cloud_folder = 'images/class_1_cloud'
-no_cloud_folder = 'images/class_0_no_cloud'
+cloud_folder = 'training_images/class_1_cloud'
+no_cloud_folder = 'training_images/class_0_no_cloud'
 
 # Ensure output folders exist
 os.makedirs(no_cloud_folder, exist_ok=True)

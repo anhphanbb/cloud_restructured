@@ -13,13 +13,13 @@ import re
 
 # Define input and output folders 
 # nc_input_folder = 'nc_files_to_predict' 
-nc_input_folder = r'E:\soc\l1r\2024\08' 
+nc_input_folder = r'E:\soc\l1r\2024\10' 
   
-csv_predictions_folder = 'orbit_predictions' 
-# csv_predictions_folder = r'E:\soc\l1r\2024\08\orbit_predictions' 
+# csv_predictions_folder = 'orbit_predictions' 
+csv_predictions_folder = r'E:\soc\l1r\2024\10\orbit_predictions'
 
-nc_output_folder = 'nc_files_with_mlcloud' 
-# nc_output_folder = r'E:\soc\l1r\2024\08\nc_files_with_mlcloud' 
+# nc_output_folder = 'nc_files_with_mlcloud' 
+nc_output_folder = r'E:\soc\l1r\2024\10\nc_files_with_mlcloud' 
 
 # Ensure the output folder exists
 os.makedirs(nc_output_folder, exist_ok=True)
@@ -33,53 +33,73 @@ box_mapping = {
 def extract_orbit_number(filename):
     return filename.split('_')[4]
 
-# Function to create a new NetCDF file with the MLCloud variable
+# # Function to create a new NetCDF file with the MLCloud variable
+# def add_mlcloud_to_nc_file(input_file_path, output_file_path, mlcloud_data):
+#     with Dataset(input_file_path, 'r') as src_nc, Dataset(output_file_path, 'w', format=src_nc.file_format) as dst_nc:
+#         # Copy global attributes
+#         dst_nc.setncatts({attr: src_nc.getncattr(attr) for attr in src_nc.ncattrs()})
+        
+#         # Copy dimensions
+#         for name, dimension in src_nc.dimensions.items():
+#             dst_nc.createDimension(name, (len(dimension) if not dimension.isunlimited() else None))
+        
+#         # Add new dimensions for MLCloud
+#         dst_nc.createDimension('y_box_across_track', 3)
+#         dst_nc.createDimension('x_box_along_track', 15)
+        
+#         # Copy variables with compression and chunking
+#         for name, variable in src_nc.variables.items():
+#             # Check if the variable needs custom chunk sizes
+#             if name in ['Radiance', 'Latitude', 'Longitude']:
+#                 chunksizes = (1, 300, 300)
+#             else:
+#                 chunksizes = variable.chunking()  # Use default chunk sizes from the source file if available
+
+#             # Create variable with compression and chunking
+#             new_var = dst_nc.createVariable(
+#                 name, 
+#                 variable.datatype, 
+#                 variable.dimensions, 
+#                 zlib=True, 
+#                 complevel=4, 
+#                 chunksizes=chunksizes
+#             )
+#             new_var[:] = variable[:]
+#             new_var.setncatts({attr: variable.getncattr(attr) for attr in variable.ncattrs()})
+        
+#         # Add the MLCloud variable with default chunking and compression
+#         mlcloud_var = dst_nc.createVariable(
+#             'MLCloud', 'f4', 
+#             ('time', 'y_box_across_track', 'x_box_along_track'), 
+#             zlib=True, 
+#             complevel=4
+#         )
+        
+#         # Write MLCloud data
+#         mlcloud_var[:] = mlcloud_data
+        
+#         print(f"Created file with MLCloud variable: {output_file_path}")
+
 def add_mlcloud_to_nc_file(input_file_path, output_file_path, mlcloud_data):
     with Dataset(input_file_path, 'r') as src_nc, Dataset(output_file_path, 'w', format=src_nc.file_format) as dst_nc:
         # Copy global attributes
         dst_nc.setncatts({attr: src_nc.getncattr(attr) for attr in src_nc.ncattrs()})
         
         # Copy dimensions
-        for name, dimension in src_nc.dimensions.items():
-            dst_nc.createDimension(name, (len(dimension) if not dimension.isunlimited() else None))
-        
-        # Add new dimensions for MLCloud
+        dst_nc.createDimension('time', len(src_nc.dimensions['time']))
         dst_nc.createDimension('y_box_across_track', 3)
         dst_nc.createDimension('x_box_along_track', 15)
         
-        # Copy variables with compression and chunking
-        for name, variable in src_nc.variables.items():
-            # Check if the variable needs custom chunk sizes
-            if name in ['Radiance', 'Latitude', 'Longitude']:
-                chunksizes = (1, 300, 300)
-            else:
-                chunksizes = variable.chunking()  # Use default chunk sizes from the source file if available
-
-            # Create variable with compression and chunking
-            new_var = dst_nc.createVariable(
-                name, 
-                variable.datatype, 
-                variable.dimensions, 
-                zlib=True, 
-                complevel=4, 
-                chunksizes=chunksizes
-            )
-            new_var[:] = variable[:]
-            new_var.setncatts({attr: variable.getncattr(attr) for attr in variable.ncattrs()})
-        
-        # Add the MLCloud variable with default chunking and compression
+        # Add the MLCloud variable
         mlcloud_var = dst_nc.createVariable(
             'MLCloud', 'f4', 
             ('time', 'y_box_across_track', 'x_box_along_track'), 
             zlib=True, 
             complevel=4
         )
-        
-        # Write MLCloud data
         mlcloud_var[:] = mlcloud_data
-        
-        print(f"Created file with MLCloud variable: {output_file_path}")
 
+        print(f"Created file with ONLY MLCloud variable: {output_file_path}")
 
 # Main script to process all files
 for file_name in os.listdir(nc_input_folder):

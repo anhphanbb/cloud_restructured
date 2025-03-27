@@ -11,40 +11,53 @@ import numpy as np
 import pandas as pd
 import re
 import time
+import tensorflow as tf
 from tensorflow.keras.models import load_model
 from tensorflow.keras.applications.resnet50 import preprocess_input
+import gc
+from tensorflow.keras import backend as K
+from concurrent.futures import ThreadPoolExecutor
 
 # Path to the folder containing orbit subfolders with images 
-input_folder = 'images_to_predict' 
-# input_folder = r'E:\soc\l1r\2024\08\images_to_predict' 
+# input_folder = 'images_to_predict' 
+input_folder = r'E:\soc\l1r\2024\10\images_to_predict' 
 
 # Output folder for CSV results 
-csv_output_folder = 'orbit_predictions' 
-# csv_output_folder = r'E:\soc\l1r\2024\08\orbit_predictions' 
+# csv_output_folder = 'orbit_predictions' 
+csv_output_folder = r'E:\soc\l1r\2024\10\orbit_predictions' 
 
 # Path to the pre-trained model
-model_path = 'models/DeepLearning_resnet_model_cloud_feb_24_2025.h5'
+model_path = 'models/tf_model_cloud_py310_jan_14_labels.h5'
 
 # Ensure the output folder for CSV files exists
 os.makedirs(csv_output_folder, exist_ok=True)
 
+print("CUDA version:", tf.sysconfig.get_build_info().get("cuda_version", "Not Found")) 
+print("cuDNN version:", tf.sysconfig.get_build_info().get("cudnn_version", "Not Found")) 
+print("GPU detected:", tf.config.list_physical_devices('GPU')) 
+
 # Load the pre-trained model
 model = load_model(model_path)
 
-# Function to preprocess a batch of images for the model
+gpus = tf.config.experimental.list_physical_devices('GPU')
+if gpus:
+    try:
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+    except RuntimeError as e:
+        print(e)
+
+# @tf.function
+def predict_batch(model, batch_images):
+    return model(batch_images, training=False)
+
+def load_image(path):
+    return cv2.imread(path)
+
 def preprocess_images_batch(image_paths):
-    """
-    Preprocess a batch of images to match the model's expected input.
-    Resize to (43, 43) and apply ResNet-50 preprocessing.
-    """
-    batch = []
-    for image_path in image_paths:
-        image = cv2.imread(image_path)  # Load image in RGB directly
-        # image_resized = cv2.resize(image, (100, 20))  # Resize to match training size # Set height=100 and width=20
-        # image_resized = image  # Resize to match training size
-        image_preprocessed = preprocess_input(image)  # Apply ResNet-50 preprocessing
-        batch.append(image_preprocessed)
-    return np.array(batch)  # Convert to a batch for prediction
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        images = list(executor.map(load_image, image_paths))
+    return preprocess_input(np.array(images))
 
 # Function to compute running averages
 def compute_running_average(predictions, window_size):
@@ -66,6 +79,8 @@ def remove_orbit_images(orbit_folder):
 
 # Function to process a single orbit folder with batching
 def process_orbit_folder(orbit_folder, orbit_number, batch_size=32, avg_window_size=9):
+    global model
+    
     start_time = time.time()
     results = []  # To store results for the current orbit
     images = os.listdir(orbit_folder)
@@ -131,7 +146,15 @@ def process_orbit_folder(orbit_folder, orbit_number, batch_size=32, avg_window_s
     print(f"Results saved to {output_csv_path}")
 
     # Remove images after processing
-    remove_orbit_images(orbit_folder)
+    # remove_orbit_images(orbit_folder)
+    
+    # Invoking garbage collection at the end of each orbit. 
+    del df_results, running_averages, results, image_data, batch_images
+    gc.collect()
+    
+    # Clear session. Helps with slowing down after a few orbits. 
+    K.clear_session()
+    model = load_model(model_path)
     
 # Main script to process all orbit subfolders
 def process_all_orbits(input_folder, batch_size=32, avg_window_size=1):
@@ -146,4 +169,4 @@ def process_all_orbits(input_folder, batch_size=32, avg_window_size=1):
                 process_orbit_folder(orbit_folder_path, orbit_number, batch_size=batch_size, avg_window_size=avg_window_size)
 
 # Run the script
-process_all_orbits(input_folder, batch_size=64, avg_window_size=1)
+process_all_orbits(input_folder, batch_size=2048, avg_window_size=1)

@@ -12,9 +12,9 @@ from netCDF4 import Dataset
 import re
 
 # Define input and output folders
-nc_input_folder = 'l1r_11'
-csv_intervals_path = 'csv/unique_collab_2024.csv'
-nc_output_folder = 'nc_files_with_mlcloud_from_students_labels'
+nc_input_folder = 'selected_nc_files'
+csv_intervals_path = 'csv/cloud_intervals_selected_orbits.csv'
+nc_output_folder = 'selected_nc_files_with_mlcloud_from_labels'
 
 # Ensure the output folder exists
 os.makedirs(nc_output_folder, exist_ok=True)

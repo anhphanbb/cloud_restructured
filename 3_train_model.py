@@ -126,7 +126,7 @@ histories.append(hist)
 
 # Save the Model
 os.makedirs('models', exist_ok=True)
-model.save('models/DeepLearning_resnet_model_cloud_feb_24_2025.h5')
+model.save('models/tf_model_cloud_py310_jan_14_labels.h5')
 
 
 # Plot validation metrics for ResNet-50 model

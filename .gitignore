@@ -174,4 +174,10 @@ nc_files_with_mlls/
 l1r_ls/
 l1r_01/
 selected_nc_files/
+selected_nc_files_with_mlcloud/
+selected_nc_files_with_mlcloud_from_labels/
 orbit_predictions/
+orbit_predictions_selected_nc_files/
+ls_processed_nc_files/
+processed_selected_nc_files_with_mlcloud/
+processed_selected_nc_files_with_mlcloud_from_labels/
