@@ -7,7 +7,7 @@ nc_folder = r'Z:\soc\l1r'  # Source folder containing .nc files
 selected_folder = 'selected_nc_files'  # Destination folder
 
 # List of specific orbits to copy
-orbit_list = [135, 180, 225, 270, 315, 360, 405, 450, 495, 545, 590, 635, 815, 1130, 1175, 1265, 1310, 1355, 1400, 1445, 1490, 2525, 2570, 2615, 2660, 2705, 2750, 2795, 2840, 2885]
+orbit_list = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 30, 45, 90, 135]#, 180, 225, 270, 315, 360, 405, 450, 495, 545, 590, 635, 815, 1130, 1175, 1265, 1310, 1355, 1400, 1445, 1490, 2525, 2570, 2615, 2660, 2705, 2750, 2795, 2840, 2885]
 
 # Ensure output folder exists
 os.makedirs(selected_folder, exist_ok=True)

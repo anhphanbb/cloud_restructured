@@ -20,11 +20,11 @@ from concurrent.futures import ThreadPoolExecutor
 
 # Path to the folder containing orbit subfolders with images 
 # input_folder = 'images_to_predict' 
-input_folder = r'E:\soc\l1r\2024\10\images_to_predict' 
+input_folder = r'E:\soc\l1r\2025\03\images_to_predict' 
 
 # Output folder for CSV results 
 # csv_output_folder = 'orbit_predictions' 
-csv_output_folder = r'E:\soc\l1r\2024\10\orbit_predictions' 
+csv_output_folder = r'E:\soc\l1r\2025\03\orbit_predictions' 
 
 # Path to the pre-trained model
 model_path = 'models/tf_model_cloud_py310_jan_14_labels.h5'

@@ -21,8 +21,9 @@ space = 5
 
 # Path to the CSV file with filenames and intervals
 # csv_file_path = 'csv/cloud_intervals_feb_24_2025.csv'
-csv_file_path = 'csv/old/cloud_intervals_jan_14.csv'
-parent_directory = r'Z:\soc\l1r'
+csv_file_path = 'csv/cloud_intervals_april_14_2025.csv'
+# parent_directory = r'Z:\soc\l1r'
+parent_directory = 'selected_nc_files'
 
 # Define output folders
 cloud_folder = 'training_images/class_1_cloud'
@@ -132,7 +133,7 @@ def save_image(data, folder, orbit_number, frame_index, box_idx, boxes):
     cv2.imwrite(file_path, cropped_image)
 
 # Main function to process intervals and save images
-def process_intervals_and_save_images(data, grid_boxes, cloud_chance=.3, no_cloud_chance=.012):
+def process_intervals_and_save_images(data, grid_boxes, cloud_chance=1, no_cloud_chance=.4):
     threshold = 3 # Number of images away from the boundary between sp and no sp
     orbit_intervals = extract_intervals_per_orbit(data)
     for orbit_number, boxes in orbit_intervals.items():

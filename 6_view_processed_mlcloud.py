@@ -14,10 +14,11 @@ import re
 from matplotlib.patches import Rectangle
 
 # Define the path to the parent directory where the dataset is located
-parent_directory = 'processed_nc_files'
+# parent_directory = r'E:\soc\l1c\2024\04'
+parent_directory = r'E:\GitHub\cloud_restructured\processed_selected_nc_files_with_mlcloud'
 
 # Define the orbit number
-orbit_number = 1  # orbit number
+orbit_number = 1355  # orbit number
 
 # Pad the orbit number with zeros until it has 5 digits
 orbit_str = str(orbit_number).zfill(5)
@@ -45,6 +46,21 @@ radiance = dataset.variables['Radiance'][:]
 mlcloud = dataset.variables['Processed_MLCloud'][:]  # Load MLCloud variable
 iss_latitude = dataset.variables['ISS_Latitude'][:]  # Load ISS latitude data
 iss_longitude = dataset.variables['ISS_Longitude'][:]  # Load ISS longitude data
+
+print("=== Global Attributes ===")
+for attr in dataset.ncattrs():
+    print(f"{attr}: {dataset.getncattr(attr)}")
+
+print("\n=== Dimensions ===")
+for dim in dataset.dimensions.keys():
+    print(f"{dim}: {len(dataset.dimensions[dim])}")
+
+print("\n=== Variables ===")
+for var in dataset.variables.keys():
+    print(f"{var}: {dataset.variables[var]}")
+    print("Attributes:")
+    for attr in dataset.variables[var].ncattrs():
+        print(f"    {attr}: {dataset.variables[var].getncattr(attr)}")
 
 # Function to define grid boxes
 def define_boxes():
@@ -77,7 +93,7 @@ show_highlight = True  # Toggle to show/hide highlights
 show_numbers = False
 show_lines = False
 running_average_window = 1
-threshold = 0.5
+threshold = 0.3
 
 # Calculate initial vmin and vmax using the 0.4th and 99.7th percentiles
 radiance_at_time_0 = radiance[0, :, :]
