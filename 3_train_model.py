@@ -61,6 +61,9 @@ data = data.map(lambda x, y: (augment(x), y))
 # Further preprocessing for ResNet-50
 data = data.map(lambda x, y: (preprocess_input(x), y))
 
+# Shuffle the dataset first
+data = data.shuffle(buffer_size=200000, seed=42, reshuffle_each_iteration=False)
+
 # Split Data
 data_size = data.cardinality().numpy()
 train_size = int(data_size * 0.7)

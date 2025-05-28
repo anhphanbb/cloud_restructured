@@ -181,3 +181,4 @@ orbit_predictions_selected_nc_files/
 ls_processed_nc_files/
 processed_selected_nc_files_with_mlcloud/
 processed_selected_nc_files_with_mlcloud_from_labels/
+training_nc_files/
