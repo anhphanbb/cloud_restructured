@@ -12,9 +12,13 @@ from netCDF4 import Dataset
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 # Define input and output folders
-original_nc_folder = r'E:\soc\l1r\2025\03'  # Original nc files with full variables
-nc_input_folder = r'E:\soc\l1r\2025\03\nc_files_with_mlcloud'  # Only contains MLCloud
-nc_output_folder = r'E:\soc\l1c\2025\03'  # Final output
+# original_nc_folder = 'selected_nc_files' 
+# nc_input_folder = 'selected_nc_files_with_mlcloud' 
+# nc_output_folder = 'processed_selected_nc_files_with_mlcloud' 
+
+original_nc_folder = r'E:\soc\l1r\2025\04'  # Original nc files with full variables
+nc_input_folder = r'E:\soc\l1r\2025\04\nc_files_with_mlcloud'  # Only contains MLCloud
+nc_output_folder = r'E:\soc\l1c\2025\04'  # Final output
 
 # Ensure the output folder exists
 os.makedirs(nc_output_folder, exist_ok=True)

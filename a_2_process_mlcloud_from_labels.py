@@ -11,8 +11,8 @@ import numpy as np
 from netCDF4 import Dataset
 
 # Define input and output folders
-nc_input_folder = 'selected_nc_files_with_mlcloud_from_labels'
-nc_output_folder = 'processed_selected_nc_files_with_mlcloud_from_labels'
+nc_input_folder = 'training_nc_files_with_mlcloud_from_labels'
+nc_output_folder = 'training_nc_files_with_processed_mlcloud_from_labels'
 
 # Ensure the output folder exists
 os.makedirs(nc_output_folder, exist_ok=True)

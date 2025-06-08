@@ -13,13 +13,13 @@ import re
 
 # Define input and output folders 
 # nc_input_folder = 'selected_nc_files' 
-nc_input_folder = r'E:\soc\l1r\2025\03' 
+nc_input_folder = r'E:\soc\l1r\2025\04' 
   
 # csv_predictions_folder = 'orbit_predictions' 
-csv_predictions_folder = r'E:\soc\l1r\2025\03\orbit_predictions'
+csv_predictions_folder = r'E:\soc\l1r\2025\04\orbit_predictions'
 
 # nc_output_folder = 'selected_nc_files_with_mlcloud' 
-nc_output_folder = r'E:\soc\l1r\2025\03\nc_files_with_mlcloud' 
+nc_output_folder = r'E:\soc\l1r\2025\04\nc_files_with_mlcloud' 
 
 # Ensure the output folder exists
 os.makedirs(nc_output_folder, exist_ok=True)
