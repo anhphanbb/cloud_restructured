@@ -4,10 +4,11 @@ import re
 
 # Define paths
 nc_folder = r'Z:\soc\l1r'  # Source folder containing .nc files
-selected_folder = 'training_nc_files'  # Destination folder
+selected_folder = r'D:\Github\labeled_nc_files'  # Destination folder
 
 # List of specific orbits to copy
-orbit_list = list(range(2, 139, 2))#, 180, 225, 270, 315, 360, 405, 450, 495, 545, 590, 635, 815, 1130, 1175, 1265, 1310, 1355, 1400, 1445, 1490, 2525, 2570, 2615, 2660, 2705, 2750, 2795, 2840, 2885]
+# orbit_list = list(range(2, 139, 2))#, 180, 225, 270, 315, 360, 405, 450, 495, 545, 590, 635, 815, 1130, 1175, 1265, 1310, 1355, 1400, 1445, 1490, 2525, 2570, 2615, 2660, 2705, 2750, 2795, 2840, 2885]
+orbit_list = [1100, 1110, 1115, 1117, 1125, 1130, 1134, 1140, 1145, 1151, 1160, 1168, 1175, 1183, 1185, 1202, 1219, 1236, 2495, 2865, 2880, 2895, 2910, 2925, 2940, 2955, 2970, 4200, 4215, 4230, 4245, 4260, 4275, 4290, 4305, 4320]
 
 # Ensure output folder exists
 os.makedirs(selected_folder, exist_ok=True)

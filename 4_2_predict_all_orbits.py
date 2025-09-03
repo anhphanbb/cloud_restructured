@@ -19,15 +19,15 @@ from tensorflow.keras import backend as K
 from concurrent.futures import ThreadPoolExecutor
 
 # Path to the folder containing orbit subfolders with images 
-# input_folder = 'images_to_predict' 
-input_folder = r'E:\soc\l1r\2025\04\images_to_predict' 
+input_folder = 'i1mages_to_predict' 
+input_folder = r'E:\soc\l1r\2025\07\images_to_predict' 
 
 # Output folder for CSV results 
 # csv_output_folder = 'orbit_predictions' 
-csv_output_folder = r'E:\soc\l1r\2025\04\orbit_predictions' 
+csv_output_folder = r'E:\soc\l1r\2025\07\orbit_predictions' 
 
 # Path to the pre-trained model
-model_path = 'models/tf_model_cloud_py310_may_27_labels_soc_2.h5'
+model_path = 'models/tf_model_cloud_py310_june_12.h5'
 
 # Ensure the output folder for CSV files exists
 os.makedirs(csv_output_folder, exist_ok=True)

@@ -9,17 +9,16 @@ import os
 import numpy as np
 import pandas as pd
 from netCDF4 import Dataset
-import re
 
 # Define input and output folders 
 # nc_input_folder = 'selected_nc_files' 
-nc_input_folder = r'E:\soc\l1r\2025\04' 
+nc_input_folder = r'E:\soc\l1r\2025\07' 
   
 # csv_predictions_folder = 'orbit_predictions' 
-csv_predictions_folder = r'E:\soc\l1r\2025\04\orbit_predictions'
+csv_predictions_folder = r'E:\soc\l1r\2025\07\orbit_predictions'
 
 # nc_output_folder = 'selected_nc_files_with_mlcloud' 
-nc_output_folder = r'E:\soc\l1r\2025\04\nc_files_with_mlcloud' 
+nc_output_folder = r'E:\soc\l1r\2025\07\nc_files_with_mlcloud' 
 
 # Ensure the output folder exists
 os.makedirs(nc_output_folder, exist_ok=True)

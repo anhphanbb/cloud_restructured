@@ -19,7 +19,7 @@ training_orbits = {'', '00090', ''}
 
 threshold_results = {}
 
-for threshold in np.array([0.15, 0.20, 0.25, 0.5, 1.1]):
+for threshold in np.array([0.4, 0.5, 0.6, 1.1]):
     results = []
     for file_name in os.listdir(folder_a):
         if not file_name.endswith('.nc'):

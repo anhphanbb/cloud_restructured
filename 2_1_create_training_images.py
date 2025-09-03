@@ -133,7 +133,7 @@ def save_image(data, folder, orbit_number, frame_index, box_idx, boxes):
     cv2.imwrite(file_path, cropped_image)
 
 # Main function to process intervals and save images
-def process_intervals_and_save_images(data, grid_boxes, cloud_chance=.5, no_cloud_chance=.1):
+def process_intervals_and_save_images(data, grid_boxes, cloud_chance=1, no_cloud_chance=.05):
     threshold = 3 # Number of images away from the boundary between sp and no sp
     orbit_intervals = extract_intervals_per_orbit(data)
     for orbit_number, boxes in orbit_intervals.items():

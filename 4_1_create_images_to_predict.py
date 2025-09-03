@@ -15,8 +15,8 @@ import numpy as np
 import re
 from multiprocessing import Pool, cpu_count
 
-nc_folder = r'E:\soc\l1r\2025\04'
-output_folder = r'E:\soc\l1r\2025\04\images_to_predict'
+nc_folder = r'E:\soc\l1r\2025\07'
+output_folder = r'E:\soc\l1r\2025\07\images_to_predict'
 space = 5
 min_orbit_number = 1
 

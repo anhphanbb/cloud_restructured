@@ -9,12 +9,11 @@ import os
 import numpy as np
 import pandas as pd
 from netCDF4 import Dataset
-import re
 
 # Define input and output folders
-nc_input_folder = 'training_nc_files'
-csv_intervals_path = 'csv/intervals_without_ground_lights_may_27_2025.csv'
-nc_output_folder = 'training_nc_files_with_mlcloud_from_labels'
+nc_input_folder = r'D:\Github\labeled_nc_files'
+csv_intervals_path = 'csv/intervals_without_ground_lights_aug_12_2025.csv'
+nc_output_folder = r'D:\Github\labeled_nc_files_with_mlcloud_from_labels'
 
 # Ensure the output folder exists
 os.makedirs(nc_output_folder, exist_ok=True)

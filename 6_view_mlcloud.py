@@ -14,10 +14,10 @@ import re
 from matplotlib.patches import Rectangle
 
 # Define the path to the parent directory where the dataset is located
-parent_directory = 'nc_files_with_mlcloud'
+parent_directory = 'processed_selected_nc_files_with_mlcloud_from_labels'
 
 # Define the orbit number
-orbit_number = 45  # orbit number
+orbit_number = 2  # orbit number
 
 # Pad the orbit number with zeros until it has 5 digits
 orbit_str = str(orbit_number).zfill(5)

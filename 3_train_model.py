@@ -109,7 +109,7 @@ logdir = f'logs/resnet_model'
 tensorboard_callback = TensorBoard(log_dir=logdir)
 early_stopping_callback = EarlyStopping(
     monitor='val_loss',
-    patience=100,
+    patience=200,
     restore_best_weights=True
 )
 
@@ -118,7 +118,7 @@ start_time = time.time()
 # Add class weights during training
 hist = model.fit(
     train,
-    epochs=500,
+    epochs=1000,
     validation_data=val,
     callbacks=[tensorboard_callback, early_stopping_callback]
 )
