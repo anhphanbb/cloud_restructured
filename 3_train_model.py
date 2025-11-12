@@ -118,7 +118,7 @@ start_time = time.time()
 # Add class weights during training
 hist = model.fit(
     train,
-    epochs=1000,
+    epochs=1200,
     validation_data=val,
     callbacks=[tensorboard_callback, early_stopping_callback]
 )
@@ -129,7 +129,7 @@ histories.append(hist)
 
 # Save the Model
 os.makedirs('models', exist_ok=True)
-model.save('models/tf_model_cloud_py310_april_15_labels.h5')
+model.save('models/tf_model_cloud_py310_oct_27_2025.h5')
 
 
 # Plot validation metrics for ResNet-50 model

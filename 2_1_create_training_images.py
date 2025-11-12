@@ -4,24 +4,96 @@ Created on Mon Dec  2 18:51:37 2024
 
 @author: Anh
 
-Update Dec 2 2024: Combines interval extraction with radiance image generation.
+Update: Reads runtime parameters from a config text file.
+
+Example config.txt (commas or one-per-line both work):
+    space = 5, min_radiance = 0, max_radiance = 24
+    cloud_chance = 0.5, no_cloud_chance = 0.025
+    threshold = 3
 """
 
-import pandas as pd
 import os
-from netCDF4 import Dataset
-import cv2
-import numpy as np
-import random
 import re
+import cv2
+import json
 import shutil
+import random
+import numpy as np
+import pandas as pd
+from netCDF4 import Dataset
 
-# Number of frames before and after for consecutive image combination
-space = 5
+# ----------------------- CONFIG -----------------------
+CONFIG_PATH = 'config.txt'  # change if you want
 
+# Defaults if a key is missing in config.txt
+DEFAULTS = {
+    'space': 5,
+    'min_radiance': 0.0,
+    'max_radiance': 24.0,
+    'cloud_chance': 0.5,
+    'no_cloud_chance': 0.025,
+    'threshold': 3,
+}
+
+def parse_config(config_path):
+    """
+    Parse key=value pairs from a text file.
+    - Accepts multiple pairs per line separated by commas.
+    - Ignores comments starting with '#'.
+    - Keys supported: space, min_radiance, max_radiance, cloud_chance, no_cloud_chance, threshold
+    """
+    cfg = DEFAULTS.copy()
+    if not os.path.isfile(config_path):
+        print(f"[warn] Config file not found: {config_path}. Using defaults: {cfg}")
+        return cfg
+
+    with open(config_path, 'r', encoding='utf-8') as f:
+        text = f.read()
+
+    # Remove comments
+    text = re.sub(r'#.*', '', text)
+
+    # Find all key=value pairs, allowing commas in between pairs
+    # e.g., "space = 5, min_radiance = 0, max_radiance = 24"
+    pairs = re.findall(r'([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([^,\n\r]+)', text)
+
+    for key, val_raw in pairs:
+        key = key.strip()
+        val = val_raw.strip()
+        try:
+            if key in ('space', 'threshold'):
+                cfg[key] = int(float(val))
+            elif key in ('min_radiance', 'max_radiance', 'cloud_chance', 'no_cloud_chance'):
+                cfg[key] = float(val)
+        except ValueError:
+            print(f"[warn] Could not parse '{key}={val}'. Keeping default {key}={cfg[key]}")
+
+    # Sanity checks
+    if cfg['max_radiance'] <= cfg['min_radiance']:
+        print("[warn] max_radiance <= min_radiance. Resetting to defaults 24.0 and 0.0")
+        cfg['min_radiance'] = DEFAULTS['min_radiance']
+        cfg['max_radiance'] = DEFAULTS['max_radiance']
+    if not (0.0 <= cfg['cloud_chance'] <= 1.0):
+        print("[warn] cloud_chance out of [0,1]. Resetting to default.")
+        cfg['cloud_chance'] = DEFAULTS['cloud_chance']
+    if not (0.0 <= cfg['no_cloud_chance'] <= 1.0):
+        print("[warn] no_cloud_chance out of [0,1]. Resetting to default.")
+        cfg['no_cloud_chance'] = DEFAULTS['no_cloud_chance']
+
+    print("[info] Loaded config:", json.dumps(cfg, indent=2))
+    return cfg
+
+cfg = parse_config(CONFIG_PATH)
+space = cfg['space']
+min_radiance = cfg['min_radiance']
+max_radiance = cfg['max_radiance']
+cloud_chance = cfg['cloud_chance']
+no_cloud_chance = cfg['no_cloud_chance']
+threshold = cfg['threshold']
+
+# ----------------------- PATHS ------------------------
 # Path to the CSV file with filenames and intervals
-# csv_file_path = 'csv/cloud_intervals_feb_24_2025.csv'
-csv_file_path = 'csv/intervals_without_ground_lights_may_27_2025.csv'
+csv_file_path = 'csv/cloud_intervals_cleaned_filtered_10272025.csv'
 # parent_directory = r'Z:\soc\l1r'
 parent_directory = 'training_nc_files'
 
@@ -33,15 +105,16 @@ no_cloud_folder = 'training_images/class_0_no_cloud'
 os.makedirs(no_cloud_folder, exist_ok=True)
 os.makedirs(cloud_folder, exist_ok=True)
 
-# Function to clear all files in a given folder
+# ----------------------- HELPERS ----------------------
 def clear_images(folder_path):
+    """Delete all files and subfolders under folder_path."""
     for filename in os.listdir(folder_path):
         file_path = os.path.join(folder_path, filename)
         try:
             if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)  # Remove the file
+                os.unlink(file_path)
             elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)  # Remove the directory and its contents
+                shutil.rmtree(file_path)
         except Exception as e:
             print(f'Failed to delete {file_path}. Reason: {e}')
 
@@ -49,16 +122,13 @@ def clear_images(folder_path):
 clear_images(cloud_folder)
 clear_images(no_cloud_folder)
 
-# Function to define grid boxes
 def define_boxes():
     x_ranges = [
         (0, 19), (20, 39), (40, 59), (60, 79), (80, 99), (100, 119),
         (120, 139), (140, 159), (160, 179), (180, 199), (200, 219),
         (220, 239), (240, 259), (260, 279), (280, 299)
     ]
-    y_ranges = [
-        (0, 99), (100, 199), (200, 299)
-    ]
+    y_ranges = [(0, 99), (100, 199), (200, 299)]
 
     boxes = {}
     for j, y_range in enumerate(y_ranges):
@@ -68,22 +138,20 @@ def define_boxes():
     return boxes
 
 grid_boxes = define_boxes()
-#print(grid_boxes)
 
-# Function to extract intervals per orbit and box from CSV data
-def extract_intervals_per_orbit(data):
+def extract_intervals_per_orbit(dataframe):
     orbit_intervals = {}
-    for _, row in data.iterrows():
-        orbit = row['Orbit #']
+    for _, row in dataframe.iterrows():
+        orbit = row.get('Orbit #', None)
         if pd.notna(orbit):
             orbit = int(orbit)
             if orbit not in orbit_intervals:
                 orbit_intervals[orbit] = {}
-            for col in data.columns:
+            for col in dataframe.columns:
                 if "start" in col:
                     box = col.split("start")[0].strip()
                     end_col = f"{box}end"
-                    if end_col in data.columns:
+                    if end_col in dataframe.columns:
                         start = row[col]
                         end = row[end_col]
                         if pd.notna(start) and pd.notna(end):
@@ -92,51 +160,48 @@ def extract_intervals_per_orbit(data):
                             orbit_intervals[orbit][box].append((int(start), int(end)))
     return orbit_intervals
 
-# Function to search for .nc file
-def find_nc_file(parent_directory, orbit_number):
+def find_nc_file(parent_dir, orbit_number):
     orbit_str = str(int(orbit_number)).zfill(5)
     pattern = re.compile(r'awe_l1r_q20_(.*)_' + orbit_str + r'_(.*)\.nc')
-    
-    for root, dirs, files in os.walk(parent_directory):
+    for root, _, files in os.walk(parent_dir):
         for file in files:
             if pattern.match(file):
                 return os.path.join(root, file)
     raise FileNotFoundError(f"No file found for orbit number {orbit_str}")
 
-# Function to save three-layer images
-def save_image(data, folder, orbit_number, frame_index, box_idx, boxes):
-    min_radiance, max_radiance = 0, 24
-    norm_radiance = np.clip((data[frame_index] - min_radiance) / (max_radiance - min_radiance) * 255, 0, 255).astype(np.uint8)
-    prev_frame_norm = None
-    next_frame_norm = None
+def save_image(radiance_3d, folder, orbit_number, frame_index, box_idx, boxes,
+               space_val, min_rad, max_rad):
+    # Normalize frames to 0..255
+    norm = np.clip((radiance_3d[frame_index] - min_rad) / (max_rad - min_rad) * 255, 0, 255).astype(np.uint8)
+    prev_norm = None
+    next_norm = None
 
-    if frame_index >= space:
-        prev_frame = data[frame_index - space]
-        prev_frame_norm = np.clip((prev_frame - min_radiance) / (max_radiance - min_radiance) * 255, 0, 255).astype(np.uint8)
-    if frame_index < data.shape[0] - space:
-        next_frame = data[frame_index + space]
-        next_frame_norm = np.clip((next_frame - min_radiance) / (max_radiance - min_radiance) * 255, 0, 255).astype(np.uint8)
+    if frame_index >= space_val:
+        prev = radiance_3d[frame_index - space_val]
+        prev_norm = np.clip((prev - min_rad) / (max_rad - min_rad) * 255, 0, 255).astype(np.uint8)
+    if frame_index < radiance_3d.shape[0] - space_val:
+        nxt = radiance_3d[frame_index + space_val]
+        next_norm = np.clip((nxt - min_rad) / (max_rad - min_rad) * 255, 0, 255).astype(np.uint8)
 
-    x_start, x_end = boxes[box_idx]['x']  
-    y_start, y_end = boxes[box_idx]['y'] 
+    x_start, x_end = boxes[box_idx]['x']
+    y_start, y_end = boxes[box_idx]['y']
 
-    three_layer_image = np.zeros((data.shape[1], data.shape[2], 3), dtype=np.uint8)
+    three = np.zeros((radiance_3d.shape[1], radiance_3d.shape[2], 3), dtype=np.uint8)
+    if prev_norm is not None:
+        three[..., 0] = prev_norm
+    three[..., 1] = norm
+    if next_norm is not None:
+        three[..., 2] = next_norm
 
-    if prev_frame_norm is not None:
-        three_layer_image[..., 0] = prev_frame_norm
-    three_layer_image[..., 1] = norm_radiance
-    if next_frame_norm is not None:
-        three_layer_image[..., 2] = next_frame_norm
+    cropped = three[y_start:y_end+1, x_start:x_end+1]
+    outpath = os.path.join(folder, f"orbit{orbit_number}_box{box_idx}_{frame_index}.png")
+    cv2.imwrite(outpath, cropped)
 
-    cropped_image = three_layer_image[y_start:y_end+1, x_start:x_end+1]
-    file_path = os.path.join(folder, f"orbit{orbit_number}_box{box_idx}_{frame_index}.png")
-    cv2.imwrite(file_path, cropped_image)
-
-# Main function to process intervals and save images
-def process_intervals_and_save_images(data, grid_boxes, cloud_chance=1, no_cloud_chance=.05):
-    threshold = 3 # Number of images away from the boundary between sp and no sp
-    orbit_intervals = extract_intervals_per_orbit(data)
-    for orbit_number, boxes in orbit_intervals.items():
+def process_intervals_and_save_images(df, boxes, space_val, thresh,
+                                      cloud_p, no_cloud_p,
+                                      min_rad, max_rad):
+    orbit_intervals = extract_intervals_per_orbit(df)
+    for orbit_number, box_map in orbit_intervals.items():
         print(f"Processing orbit: {orbit_number}")
         try:
             nc_file_path = find_nc_file(parent_directory, orbit_number)
@@ -147,17 +212,33 @@ def process_intervals_and_save_images(data, grid_boxes, cloud_chance=1, no_cloud
         with Dataset(nc_file_path, 'r') as nc:
             radiance = nc.variables['Radiance'][:]
             num_frames = radiance.shape[0]
-            for box, intervals in boxes.items():
-                print(f"Processing box: {box} with intervals: {intervals}")
-                for i in range(space, num_frames - space):
-                    for interval in intervals:
-                        if interval[0] + threshold <= i <= interval[1] - threshold:
-                            if random.random() < cloud_chance:
-                                save_image(radiance, cloud_folder, orbit_number, i, box, grid_boxes)
-                        elif all(i < interval[0] - threshold or i > interval[1] + threshold for interval in intervals):
-                            if random.random() < no_cloud_chance:
-                                save_image(radiance, no_cloud_folder, orbit_number, i, box, grid_boxes)
 
-# Load data
+            for box, intervals in box_map.items():
+                print(f"  Box {box} intervals: {intervals}")
+                for i in range(space_val, num_frames - space_val):
+                    # Inside any interval with safety threshold
+                    inside_any = any((start + thresh) <= i <= (end - thresh) for (start, end) in intervals)
+                    # Outside all intervals with safety threshold
+                    outside_all = all(i < (start - thresh) or i > (end + thresh) for (start, end) in intervals)
+
+                    if inside_any:
+                        if random.random() < cloud_p:
+                            save_image(radiance, cloud_folder, orbit_number, i, box, boxes,
+                                       space_val, min_rad, max_rad)
+                    elif outside_all:
+                        if random.random() < no_cloud_p:
+                            save_image(radiance, no_cloud_folder, orbit_number, i, box, boxes,
+                                       space_val, min_rad, max_rad)
+
+# ----------------------- RUN -------------------------
 data = pd.read_csv(csv_file_path)
-process_intervals_and_save_images(data, grid_boxes)
+process_intervals_and_save_images(
+    data,
+    grid_boxes,
+    space_val=space,
+    thresh=threshold,
+    cloud_p=cloud_chance,
+    no_cloud_p=no_cloud_chance,
+    min_rad=min_radiance,
+    max_rad=max_radiance
+)

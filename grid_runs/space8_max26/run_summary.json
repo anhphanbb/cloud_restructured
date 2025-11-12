@@ -1,0 +1,12 @@
+{
+  "space": 8,
+  "max_radiance": 26,
+  "min_radiance": 0.0,
+  "cloud_chance": 0.5,
+  "no_cloud_chance": 0.1,
+  "threshold": 3,
+  "images_generated": 65510,
+  "generation_seconds": 1466.35,
+  "training_seconds": 11025.44,
+  "epochs_trained": 250
+}
