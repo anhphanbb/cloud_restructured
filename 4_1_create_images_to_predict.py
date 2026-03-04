@@ -91,8 +91,8 @@ print(f"[INFO] Using space = {space}, min_radiance = {MIN_RADIANCE}, max_radianc
 
 # ---------------------- User paths ---------------------- #
 
-nc_folder = r'E:\soc\l1r\2025\09'
-output_folder = r'E:\soc\l1r\2025\09\images_to_predict'
+nc_folder = r'E:\soc\l1r\2025\12'
+output_folder = r'E:\soc\l1r\2025\12\images_to_predict'
 min_orbit_number = 1
 
 os.makedirs(output_folder, exist_ok=True)

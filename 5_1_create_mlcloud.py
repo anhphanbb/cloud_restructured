@@ -64,9 +64,9 @@ print(f"[INFO] Loaded space = {space} from config.txt")
 # Input/output folders
 # --------------------------
 
-nc_input_folder = r'E:\soc\l1r\2025\09'
-csv_predictions_folder = r'E:\soc\l1r\2025\09\orbit_predictions'
-nc_output_folder = r'E:\soc\l1r\2025\09\nc_files_with_mlcloud'
+nc_input_folder = r'E:\soc\l1r\2025\12'
+csv_predictions_folder = r'E:\soc\l1r\2025\12\orbit_predictions'
+nc_output_folder = r'E:\soc\l1r\2025\12\nc_files_with_mlcloud'
 
 os.makedirs(nc_output_folder, exist_ok=True)
 
